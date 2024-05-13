@@ -40,7 +40,7 @@ class OpenAIModel(GenerativeModel):
         wait=wait_random(min=1, max=2),
         stop=stop_after_attempt(5),
         retry=retry_if_exception_type(
-            (openai.error.RateLimitError, openai.error.APIConnectionError, openai.error.Timeout)
+            (openai._exceptions.InternalServerError)
         ),
     )
     async def generate_answer_from_chat_history(self, chat_history: List[Dict[str, str]], output_json=False) -> str:
