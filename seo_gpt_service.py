@@ -99,24 +99,3 @@ class SeoGPT:
                 secondary_keywords_column,
             )
         )
-
-
-if __name__ == '__main__':
-    concurrent_task_timing = []
-    for concurrent_tasks in [1, 3, 6]:
-        print(f'Generating SEO posts with {concurrent_tasks} concurrent tasks')
-        seo_gpt = SeoGPT(concurrency=concurrent_tasks)
-        start = time.time()
-        df = seo_gpt.bulk_generate_seo_posts(csv_path='test_assets/SEO_Article_Keywords.csv')
-        end = time.time()
-        concurrent_task_timing.append(
-            {
-                '#max_concurrent_tasks': concurrent_tasks,
-                'seconds': end - start
-            }
-        )
-        print(f'Time taken to generate SEO posts with {concurrent_tasks} concurrent tasks: {end - start:.2f} seconds')
-    concurrent_time_df = pd.DataFrame(concurrent_task_timing)
-    print(concurrent_time_df)
-    concurrent_time_df.to_excel('./output_examples/concurrent_time_df.xlsx', index=False)
-    df.to_excel('./output_examples/seo_posts.xlsx', index=False)
