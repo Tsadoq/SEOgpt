@@ -1,14 +1,23 @@
 import logging
 from typing import Dict, List
 
+import openai
 from dotenv import load_dotenv, find_dotenv
 from openai import AsyncOpenAI as OpenAI
 
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_random,
+)
+
+from generative_models.base_generative_model import GenerativeModel
 
 load_dotenv(find_dotenv())
 
 
-class OpenAIModel:
+class OpenAIModel(GenerativeModel):
     def __init__(
             self,
             model_name: str = 'gpt-4-turbo',
@@ -27,6 +36,13 @@ class OpenAIModel:
         self.client = OpenAI()
         self.seed = 42
 
+    @retry(
+        wait=wait_random(min=1, max=2),
+        stop=stop_after_attempt(5),
+        retry=retry_if_exception_type(
+            (openai.error.RateLimitError, openai.error.APIConnectionError, openai.error.Timeout)
+        ),
+    )
     async def generate_answer_from_chat_history(self, chat_history: List[Dict[str, str]], output_json=False) -> str:
         """
         Generate answer from chat history

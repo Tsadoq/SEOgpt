@@ -3,8 +3,8 @@ import logging
 import time
 from typing import List, Dict
 
-from generative_model import OpenAIModel
-from prompt import seo_prompt
+from generative_models.openai.openai_generative_model import OpenAIModel
+from prompts.prompt import seo_prompt
 import pandas as pd
 
 from utils.concurrency_utils import concurrency_with_semaphores
@@ -118,5 +118,5 @@ if __name__ == '__main__':
         print(f'Time taken to generate SEO posts with {concurrent_tasks} concurrent tasks: {end - start:.2f} seconds')
     concurrent_time_df = pd.DataFrame(concurrent_task_timing)
     print(concurrent_time_df)
-    concurrent_time_df.to_excel('concurrent_time_df.xlsx', index=False)
-    df.to_excel('seo_posts.xlsx', index=False)
+    concurrent_time_df.to_excel('./output_examples/concurrent_time_df.xlsx', index=False)
+    df.to_excel('./output_examples/seo_posts.xlsx', index=False)
